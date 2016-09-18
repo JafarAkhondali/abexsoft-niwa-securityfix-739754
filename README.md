@@ -6,7 +6,7 @@ Niwa will be a web application library to make 3D worlds and to access the world
 
    $ git clone https://github.com/abexsoft/niwa.git  
    $ cd niwa  
-   $ npm express socket.io   
+   $ npm install express socket.io   
    $ cd examples/hello_world  
    $ ./run  
 
