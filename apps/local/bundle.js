@@ -96,13 +96,13 @@ class AppWorld {
     setup(){
         let actorParams = new Niwa.SphereActorParams(1.0);
         actorParams.mass = 1.0;
-        actorParams.textureName = "/libs/three.js/examples/textures/crate.gif";        
+        actorParams.textureName = "../../../libs/three.js/examples/textures/crate.gif";        
         let actor = Niwa.World.createActor("sphere1", actorParams);
         actor.setPosition(new Niwa.Vector3D(0.0, 10.0, 0.0));
         this.world.add(actor);
 
         actorParams = new Niwa.BoxActorParams(new Niwa.Vector3D(50, 1, 50));
-        actorParams.textureName = "/libs/three.js/examples/textures/terrain/grasslight-big.jpg";
+        actorParams.textureName = "../../../libs/three.js/examples/textures/terrain/grasslight-big.jpg";
         actor = Niwa.World.createActor("floor", actorParams);
         actor.setPosition(new Niwa.Vector3D(0, -0.1, 0));
         this.world.add(actor);
@@ -55583,52 +55583,51 @@ World.prototype.clearForces = function(){
 class Actor {
     constructor(name, actorParams) {
         this.name = name;
-	    this.actorParams = actorParams;
+        this.actorParams = actorParams;
         this.world = null;
         this.body = null;
     }
-    
+
     setPosition(vec) {
         this.body.position.copy(vec);
     }
-    
+
     setInterpolatePosition(vec) {
         let interPos = (getPosition() + vec) / 2;
         this.body.position.copy(interPos);
     }
-    
+
     setRotation(quat) {
         this.body.quaternion.copy(quat);
     }
-    
+
     setLinearVelocity(vec) {
         this.body.velocity.copy(vec);
     }
-    
+
     getPosition() {
-	    return this.body.position;
+        return this.body.position;
     }
 
     getRotation() {
-	    return this.body.quaternion;
+        return this.body.quaternion;
     }
-    
+
     getLinearVelocity() {
-	    return this.body.velocity;
+        return this.body.velocity;
     }
 
     update(delta) {
     }
-    
+
     applyLocalImpulse(imp, localPoint) {
         this.body.applyLocalImpulse(imp, localPoint);
     }
-}    
+}
 
 module.exports = Actor;
 
 },{}],5:[function(require,module,exports){
-
 class ActorView {
     constructor(name, actorParams) {
         this.name = name;
@@ -55640,7 +55639,7 @@ class ActorView {
     setPosition(vec) {
         this.mesh.position.copy(vec);
     }
-    
+
     setRotation(quat) {
         this.mesh.quaternion.copy(quat);
     }
@@ -55656,12 +55655,12 @@ let BoxActorParams = require('./box_actor_params');
 
 class BoxActor extends Actor {
     constructor(name, actorParams) {
-	    super(name, actorParams);
+        super(name, actorParams);
 
         this.body = new CANNON.Body({
             mass: actorParams.mass,
             material: new CANNON.Material({
-                restitution: actorParams.restitution,                
+                restitution: actorParams.restitution,
                 friction: actorParams.friction,
             })
         });
@@ -55681,20 +55680,20 @@ module.exports = BoxActor;
 },{"../../../libs/cannon.js/build/cannon":2,"../../world/world":18,"../actor":4,"./box_actor_params":7}],7:[function(require,module,exports){
 class BoxActorParams {
     constructor(halfExtents) {
-	    this.halfExtents = halfExtents;
-        this.type = BoxActorParams.type;                
-        
-	    // physics params
-	    this.usePhysics = true;
-	    this.mass = 0;
-	    this.restitution = 0.2;
-	    this.friction = 1.0;
-	    this.linearDamping = 0.0;
-	    this.angularDamping = 0.0;
-	    this.collisionFilter = null;
-	    
-	    // visual params
-	    this.textureName = null;
+        this.halfExtents = halfExtents;
+        this.type = BoxActorParams.type;
+
+        // physics params
+        this.usePhysics = true;
+        this.mass = 0;
+        this.restitution = 0.2;
+        this.friction = 1.0;
+        this.linearDamping = 0.0;
+        this.angularDamping = 0.0;
+        this.collisionFilter = null;
+
+        // visual params
+        this.textureName = null;
     }
 }
 
@@ -55713,7 +55712,7 @@ class BoxActorView extends ActorView {
         super(name, actorParams);
         let geometry = new THREE.BoxGeometry(actorParams.halfExtents.x * 2,
                                              actorParams.halfExtents.y * 2,
-                                             actorParams.halfExtents.z * 2);        
+                                             actorParams.halfExtents.z * 2);
         let loader = new THREE.TextureLoader();
         let texture = loader.load(actorParams.textureName);
         let material = new THREE.MeshBasicMaterial({map: texture});
@@ -55724,11 +55723,10 @@ class BoxActorView extends ActorView {
         return new BoxActorView(name, actorParams);
     }
 }
-    
+
 UserInterface.setCreator(BoxActorParams.type, BoxActorView.create);
 
 module.exports = BoxActorView;
-
 
 },{"../../../libs/three.js/build/three":3,"../../user_interface/user_interface":17,"../actor_view":5,"./box_actor_params":7}],9:[function(require,module,exports){
 let World = require('../../world/world');
@@ -55738,12 +55736,12 @@ let SphereActorParams = require('./sphere_actor_params');
 
 class SphereActor extends Actor {
     constructor(name, actorParams) {
-	    super(name, actorParams);
+        super(name, actorParams);
 
         this.body = new CANNON.Body({
             mass: actorParams.mass,
             material: new CANNON.Material({
-                restitution: actorParams.restitution,                
+                restitution: actorParams.restitution,
                 friction: actorParams.friction,
             })
         });
@@ -55763,20 +55761,20 @@ module.exports = SphereActor;
 },{"../../../libs/cannon.js/build/cannon":2,"../../world/world":18,"../actor":4,"./sphere_actor_params":10}],10:[function(require,module,exports){
 class SphereActorParams {
     constructor(radius) {
-	    this.radius = radius;
-        this.type = SphereActorParams.type;                
-        
-	    // physics params
-	    this.usePhysics = true;
-	    this.mass = 0;
-	    this.restitution = 0.2;
-	    this.friction = 1.0;
-	    this.linearDamping = 0.0;
-	    this.angularDamping = 0.0;
-	    this.collisionFilter = null;
-	    
-	    // visual params
-	    this.textureName = null;
+        this.radius = radius;
+        this.type = SphereActorParams.type;
+
+        // physics params
+        this.usePhysics = true;
+        this.mass = 0;
+        this.restitution = 0.2;
+        this.friction = 1.0;
+        this.linearDamping = 0.0;
+        this.angularDamping = 0.0;
+        this.collisionFilter = null;
+
+        // visual params
+        this.textureName = null;
     }
 }
 
@@ -55793,7 +55791,7 @@ let SphereActorParams = require('./sphere_actor_params');
 class SphereActorView extends ActorView {
     constructor(name, actorParams) {
         super(name, actorParams);
-        let geometry = new THREE.SphereGeometry(actorParams.radius);        
+        let geometry = new THREE.SphereGeometry(actorParams.radius);
         let loader = new THREE.TextureLoader();
         let texture = loader.load(actorParams.textureName);
         let material = new THREE.MeshBasicMaterial({map: texture});
@@ -55804,11 +55802,10 @@ class SphereActorView extends ActorView {
         return new SphereActorView(name, actorParams);
     }
 }
-    
+
 UserInterface.setCreator(SphereActorParams.type, SphereActorView.create);
 
 module.exports = SphereActorView;
-
 
 },{"../../../libs/three.js/build/three":3,"../../user_interface/user_interface":17,"../actor_view":5,"./sphere_actor_params":10}],12:[function(require,module,exports){
 //
@@ -55829,48 +55826,48 @@ class LocalApplication {
     }
 
     getDelta() {
-	    let now = Date.now();
-	    let delta = now - this.lastTime;
-	    this.lastTime = now;
+        let now = Date.now();
+        let delta = now - this.lastTime;
+        this.lastTime = now;
 
         return delta;
     }
-    
+
     run() {
         this.world.setup();
-        this.userInterface.setup(this.world);                
-	    requestAnimationFrame(this.update.bind(this));
+        this.userInterface.setup(this.world);
+        requestAnimationFrame(this.update.bind(this));
     }
 
     update(){
-	    requestAnimationFrame(this.update.bind(this));
+        requestAnimationFrame(this.update.bind(this));
 
         let delta = this.getDelta();
         let delta_sec = delta / 1000.0;
 
         this.world.update(delta_sec);
         this.userInterface.syncActorViews(this.world.actors)
-	    this.userInterface.render(delta_sec);
-	    this.showFps(delta);
+        this.userInterface.render(delta_sec);
+        this.showFps(delta);
     }
 
     showFps(delta) {
         this.fpsCnt += 1;
         this.deltaSum += delta;
-    
+
         if (delta > this.deltaMax) this.deltaMax = delta;
         if (delta < this.deltaMin) this.deltaMin = delta;
-        
+
         if (this.fpsCnt > 60) {
             let avg = this.deltaSum / this.fpsCnt;
-	        console.log("FPS: min: " + (1000.0 / this.deltaMax).toFixed(1) +
-		                ", avg: " + (1000.0 / avg).toFixed(1) +
-		                ", max: " + (1000.0 / this.deltaMin).toFixed(1));
-            
-	        this.fpsCnt = 0;
-	        this.deltaSum = 0;
-	        this.deltaMax = 0;
-	        this.deltaMin = 1000;
+            console.log("FPS: min: " + (1000.0 / this.deltaMax).toFixed(1) +
+                        ", avg: " + (1000.0 / avg).toFixed(1) +
+                        ", max: " + (1000.0 / this.deltaMin).toFixed(1));
+
+            this.fpsCnt = 0;
+            this.deltaSum = 0;
+            this.deltaMax = 0;
+            this.deltaMin = 1000;
         }
     }
 }
@@ -56944,9 +56941,9 @@ class UserInterface {
         this.renderer.setSize( window.innerWidth, window.innerHeight );
         document.body.appendChild( this.renderer.domElement );
         
-        this.camera = new THREE.PerspectiveCamera(60, 
-					                              window.innerWidth / window.innerHeight, 
-					                              1, 1000 );
+        this.camera = new THREE.PerspectiveCamera(60,
+                                                  window.innerWidth / window.innerHeight,
+                                                  1, 1000 );
         this.camera.position.z = 20;
         this.camera.lookAt(new THREE.Vector3( 0, 0, 0 ));
         
@@ -56956,10 +56953,10 @@ class UserInterface {
         this.actorNum = 0;
         
         this.onWindowResize = function() {
-	        that.camera.aspect = window.innerWidth / window.innerHeight;
-	        that.camera.updateProjectionMatrix();
-            
-	        that.renderer.setSize( window.innerWidth, window.innerHeight );
+            that.camera.aspect = window.innerWidth / window.innerHeight;
+            that.camera.updateProjectionMatrix();
+ 
+            that.renderer.setSize( window.innerWidth, window.innerHeight );
         };
         window.addEventListener( 'resize', this.onWindowResize, false );
         
@@ -56971,27 +56968,27 @@ class UserInterface {
 
     static createActorView(name, actorParams) {
         let actorView = null;
-	    if (UserInterface.creators[actorParams.type] !== undefined) {
-	        actorView = UserInterface.creators[actorParams.type](name, actorParams);	
-	    }
-	    else {
-	        console.log("no such class: " + actorInfo.type);
-	    }
+        if (UserInterface.creators[actorParams.type] !== undefined) {
+            actorView = UserInterface.creators[actorParams.type](name, actorParams);
+        }
+        else {
+            console.log("no such class: " + actorInfo.type);
+        }
         return actorView;
     }
 
     add(actorView, pos, quat) {
         if (this.actorViews[actorView.name] === undefined) {
-	        actorView.userInterface = this;
-	        actorView.setPosition(pos);
+            actorView.userInterface = this;
+            actorView.setPosition(pos);
             actorView.setRotation(quat);
             this.scene.add(actorView.mesh);
-	        this.actorViews[actorView.name] = actorView;            
+            this.actorViews[actorView.name] = actorView;            
             return true;
         }
         else {
-	        console.log("UserInterface: There is a actor with the same name: " + name);
-	        return false;
+            console.log("UserInterface: There is a actor with the same name: " + name);
+            return false;
         }
     }
 
@@ -57002,12 +56999,12 @@ class UserInterface {
 
     syncActorViews(actors) {
         for (name in actors) {
-	        let actor = actors[name];
-	        if (this.actorViews[name] === undefined) {
+            let actor = actors[name];
+            if (this.actorViews[name] === undefined) {
                 let actorView = UserInterface.createActorView(name, actor.actorParams);
                 this.add(actorView, actor.getPosition(), actor.getRotation());
-	        }
-	        else {
+            }
+            else {
                 this.actorViews[name].setPosition(actor.getPosition());
                 this.actorViews[name].setRotation(actor.getRotation());
 
@@ -57020,14 +57017,14 @@ class UserInterface {
                         }
                     }
                 }
-	        }
+            }
         }
     }
     
     render(delta) {
         for (name in this.actorViews) {
-	        if (this.actorViews[name].updateAnimation !== undefined)
-	            this.actorViews[name].updateAnimation(delta);
+            if (this.actorViews[name].updateAnimation !== undefined)
+                this.actorViews[name].updateAnimation(delta);
         }
         
         this.application.update(delta);
@@ -57039,7 +57036,7 @@ class UserInterface {
     }
 }
 
-UserInterface.creators = {};    
+UserInterface.creators = {};
 
 module.exports = UserInterface;
 
@@ -57056,23 +57053,23 @@ class World {
         this.fixedTimeStep = 1.0 / 60.0; // seconds
         this.maxSubSteps = 3;
         
-	    this.defaultShadow = false;
-	    this.actorNum = 0;
-	    this.actors = {};
+        this.defaultShadow = false;
+        this.actorNum = 0;
+        this.actors = {};
     }
 
     static setCreator(type, creator) {
-	    World.creators[type] = creator;
+        World.creators[type] = creator;
     }
     
     static createActor(name, actorParams) {
         let actor = null;
-	    if (World.creators[actorParams.type] !== undefined) {
-		    actor = World.creators[actorParams.type](name, actorParams);	
-	    }
-	    else {
-		    console.log("No such actor type: " + actorParams.type);
-	    }
+        if (World.creators[actorParams.type] !== undefined) {
+            actor = World.creators[actorParams.type](name, actorParams);    
+        }
+        else {
+            console.log("No such actor type: " + actorParams.type);
+        }
         return actor;
     }
     
@@ -57081,27 +57078,27 @@ class World {
     }
 
     add(actor) {
-	    if (this.actors[actor.name] === undefined) {
-		    this.actors[actor.name] = actor;
+        if (this.actors[actor.name] === undefined) {
+            this.actors[actor.name] = actor;
             actor.world = this;
 
             if (actor.body)
                 this.physicsWorld.add(actor.body);
             
             return true;
-	    }
-	    else {
-	        console.log("There is a object with the same name: " + name);
-	        return false;
+        }
+        else {
+            console.log("There is a object with the same name: " + name);
+            return false;
         }        
     }
     
     update(delta) {
         this.physicsWorld.step(this.fixedTimeStep, delta, this.maxSubSteps);
 
-	    for (name in this.actors) {
-	        this.actors[name].update(delta);
-	    }        
+        for (name in this.actors) {
+            this.actors[name].update(delta);
+        }        
 
         this.app.update(delta);
     };
@@ -57130,7 +57127,7 @@ class World {
             // Animation
             if (this.actors[key].curAnimLabel){
                 actor.curAnimLabel = this.actors[key].curAnimLabel;
-                actor.curAnimFps = this.actors[key].curAnimFps;                
+                actor.curAnimFps = this.actors[key].curAnimFps;                    
             }
             
             actors[key] = actor;
@@ -57140,23 +57137,23 @@ class World {
     }
 
     merge(actors) {
-	    for (name in actors) {
-	        if (this.actors[name] === undefined){
-		        this.actors[name] = this.createActor(name, actors[name].actorInfo);
-	        }
+        for (name in actors) {
+            if (this.actors[name] === undefined){
+                this.actors[name] = this.createActor(name, actors[name].actorInfo);
+            }
             
-	        var transform = actors[name].transform;
-	        this.actors[name].setInterpolatePosition(transform.position);
-	        //this.actors[name].setPosition(transform.position);
-	        this.actors[name].setRotation(transform.rotation);
+            var transform = actors[name].transform;
+            this.actors[name].setInterpolatePosition(transform.position);
+            //this.actors[name].setPosition(transform.position);
+            this.actors[name].setRotation(transform.rotation);
             
-	        this.actors[name].setLinearVelocity(actors[name].linearVelocity);
+            this.actors[name].setLinearVelocity(actors[name].linearVelocity);
 
             if (actors[name].curAnimLabel){
                 this.actors[name].curAnimLabel = actors[name].curAnimLabel;
                 this.actors[name].curAnimFps = actors[name].curAnimFps;
             }
-	    }
+        }
     }    
 }
 

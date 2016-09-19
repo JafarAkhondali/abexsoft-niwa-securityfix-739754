@@ -12,6 +12,10 @@ Niwa will be a web application library to make 3D worlds and to access the world
    * libs/          : external libraries, which are three.js and cannon.js.
    * apps/          : examples.
 
+## Examples
+
+   * http://abexsoft.github.io/niwa/apps/local/
+
 ## License
 
 Niwa is licensed under MIT License.  
