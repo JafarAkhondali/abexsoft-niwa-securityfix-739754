@@ -7,83 +7,29 @@ class AppUi {
     }
     setup(userInterface) {
         this.userInterface = userInterface;
-        this.morphs = [];
         
         //this.userInterface.renderer.shadowMapEnabled = true;
         
-        this.userInterface.camera.position.set(0, 5, 10);
+        this.userInterface.camera.position.set(0, 20, 30);
         this.controls = new Niwa.OrbitControls(this.userInterface.camera);
         
         //this.userInterface.scene.add( new THREE.AmbientLight( 0xcccccc ) );
           
-        this.movementSpeed = 1.0;
-        this.moveForward = false;
-        this.moveBackward = false;
-        this.moveLeft = false;
-        this.moveRight = false;
-        this.freeze = false;
-
-        document.addEventListener( 'keydown', this.onKeyDown, false );
-        document.addEventListener( 'keyup', this.onKeyUp, false );
+        document.addEventListener( 'keydown', this.onKeyDown.bind(this), false );
+        document.addEventListener( 'keyup', this.onKeyUp.bind(this), false );
     }
 
     update(delta) {
-        if (this.freeze) return;
-        
-        var actualMoveSpeed = delta * this.movementSpeed;
-        
-        if ( this.moveForward )
-            this.controls.pan(new Niwa.THREE.Vector3(0, 0,  -actualMoveSpeed));
-        
-        if ( this.moveBackward ) 
-            this.controls.pan(new Niwa.THREE.Vector3(0, 0,  actualMoveSpeed));
-        
-        if ( this.moveLeft ) 
-            this.controls.pan(new Niwa.THREE.Vector3(-actualMoveSpeed, 0, 0));
-        
-        if ( this.moveRight ) 
-            this.controls.pan(new Niwa.THREE.Vector3(actualMoveSpeed, 0, 0));
-        
         this.controls.update(delta);
-        
-        if (this.morphs[0])
-            this.morphs[0].updateAnimation(delta );
     }
 
     onKeyDown( event ) {
         switch ( event.keyCode ) {
-        case 38: /*up*/
-        case 87: /*W*/ that.moveForward = true; break;
-            
-        case 37: /*left*/
-        case 65: /*A*/ that.moveLeft = true; break;
-            
-        case 40: /*down*/
-        case 83: /*S*/ that.moveBackward = true; break;
-            
-        case 39: /*right*/
-        case 68: /*D*/ that.moveRight = true; break;
-            
-        case 81: /*Q*/ that.freeze = !this.freeze; break;
         }
     }
     
     onKeyUp( event ) {
         switch( event.keyCode ) {
-        case 38: /*up*/
-        case 87: /*W*/ that.moveForward = false; break;
-            
-        case 37: /*left*/
-        case 65: /*A*/ that.moveLeft = false; break;
-            
-        case 40: /*down*/
-        case 83: /*S*/ that.moveBackward = false; break;
-            
-        case 39: /*right*/
-        case 68: /*D*/ that.moveRight = false; break;
-            
-        case 82: /*r*/
-            
         }   
     }
 }
@@ -94,66 +40,77 @@ class AppWorld {
     }
     
     setup(){
-        let actorParams = new Niwa.SphereActorParams(1.0);
-        actorParams.mass = 1.0;
-        actorParams.textureName = "../../libs/three.js/examples/textures/crate.gif";        
-        let actor = Niwa.World.createActor("sphere1", actorParams);
-        actor.setPosition(new Niwa.Vector3D(0.0, 10.0, 0.0));
-        this.world.add(actor);
-
-        actorParams = new Niwa.BoxActorParams(new Niwa.Vector3D(50, 1, 50));
+        // Floor
+        let actorParams = new Niwa.BoxActorParams(new Niwa.Vector3D(50, 1, 50));
         actorParams.textureName = "../../libs/three.js/examples/textures/terrain/grasslight-big.jpg";
-        actor = Niwa.World.createActor("floor", actorParams);
+        let actor = Niwa.World.createActor("floor", actorParams);
         actor.setPosition(new Niwa.Vector3D(0, -0.1, 0));
         this.world.add(actor);
 
+        // Spheres
+        actorParams = new Niwa.SphereActorParams(1.0);
+        actorParams.mass = 5.0;
+        actorParams.textureName = "../../libs/three.js/examples/textures/crate.gif";
+        
+        actor = Niwa.World.createActor("sphere0", actorParams);
+        actor.setPosition(new Niwa.Vector3D(0.0, 25.0, 0.0));
+        this.world.add(actor);
+
+        actor = Niwa.World.createActor("sphere1", actorParams);
+        actor.setPosition(new Niwa.Vector3D(0.5, 23.0, 0.0));
+        this.world.add(actor);
+
+        actor = Niwa.World.createActor("sphere2", actorParams);
+        actor.setPosition(new Niwa.Vector3D(0.5, 20.0, -0.5));
+        this.world.add(actor);        
+
+        // Boxes
+        actorParams = new Niwa.BoxActorParams(new Niwa.Vector3D(1, 1, 1));
+        actorParams.mass = 10;        
+        actorParams.textureName = "../../libs/three.js/examples/textures/crate.gif";        
+
+        for (let i = 0; i < 5; i++) {
+            for (let j = 0; j < 2; j++) {
+            actor = Niwa.World.createActor("box0_" + i + "_" + j, actorParams);
+            actor.setPosition(new Niwa.Vector3D(5 - 2 * i, 10 + 2 * j, 5));
+            this.world.add(actor);
+
+            actor = Niwa.World.createActor("box1_" + i + "_" + j, actorParams);
+            actor.setPosition(new Niwa.Vector3D(3 - 2 *i, 10 + 2 * j, -5));
+            this.world.add(actor);
+
+            actor = Niwa.World.createActor("box2_" + i + "_" + j, actorParams);
+            actor.setPosition(new Niwa.Vector3D(5, 10 + 2 * j, 3 - 2 * i));
+            this.world.add(actor);
+
+            actor = Niwa.World.createActor("box3_" + i + "_" + j, actorParams);
+            actor.setPosition(new Niwa.Vector3D(-5 , 10 + 2 * j, 5 - 2 *i));
+            this.world.add(actor);
+            }
+        }
+
+        let materials = [
+            '../../libs/three.js/examples/textures/cube/skybox/px.jpg' ,
+            '../../libs/three.js/examples/textures/cube/skybox/nx.jpg' ,
+            '../../libs/three.js/examples/textures/cube/skybox/py.jpg' ,
+            '../../libs/three.js/examples/textures/cube/skybox/ny.jpg' ,
+            '../../libs/three.js/examples/textures/cube/skybox/pz.jpg' ,
+            '../../libs/three.js/examples/textures/cube/skybox/nz.jpg'  
+        ];
+        
+        actorParams = new Niwa.SkyBoxActorParams(materials);
+        actor = Niwa.World.createActor("skybox", actorParams);
+        this.world.add(actor);
+        
 /*        
         var obj;
         var actorInfo;
         this.world.enableShadow(true);
         
-        var materials = [
-            '/three.js/examples/textures/cube/skybox/px.jpg' ,
-            '/three.js/examples/textures/cube/skybox/nx.jpg' ,
-            '/three.js/examples/textures/cube/skybox/py.jpg' ,
-            '/three.js/examples/textures/cube/skybox/ny.jpg' ,
-            '/three.js/examples/textures/cube/skybox/pz.jpg' ,
-            '/three.js/examples/textures/cube/skybox/nz.jpg'  
-        ];
-        
-        actorInfo = new SkyBoxActorInfo(materials);
-        obj = this.world.actorManager.createActor("skybox", actorInfo);
-        
         actorInfo = new SpotLightActorInfo(0xffffff);
         obj = this.world.actorManager.createActor("spotLight", actorInfo);
         obj.setPosition(new Vector3D(-60,150,-30));
         
-        actorInfo = new BoxActorInfo(1, 1, 1);
-        actorInfo.textureName = "/three.js/examples/textures/crate.gif";
-        actorInfo.mass = 10;
-        obj = this.world.actorManager.createActor("box1", actorInfo);
-        obj.setPosition(new Vector3D(0, 10, 0));
-        
-        obj = this.world.actorManager.createActor("box2", actorInfo);
-        obj.setPosition(new Vector3D(2, 10, 0));
-        
-        obj = this.world.actorManager.createActor("box3", actorInfo);
-        obj.setPosition(new Vector3D(4, 10, 0));
-        
-        obj = this.world.actorManager.createActor("box4", actorInfo);
-        obj.setPosition(new Vector3D(-2, 10, 0));
-        
-        actorInfo = new SphereActorInfo(0.5);
-        actorInfo.mass = 5;
-        actorInfo.textureName = "/three.js/examples/textures/crate.gif";
-        obj = this.world.actorManager.createActor("sphere0", actorInfo);
-        obj.setPosition(new Vector3D(0, 15, 0));
-        
-        obj = this.world.actorManager.createActor("sphere1", actorInfo);
-        obj.setPosition(new Vector3D(0.5, 17, 0));
-        
-        obj = this.world.actorManager.createActor("sphere2", actorInfo);
-        obj.setPosition(new Vector3D(0, 19, -0.5));
         
         actorInfo = new BoxActorInfo(50, 1, 50);
         actorInfo.textureName = "/three.js/examples/textures/terrain/grasslight-big.jpg";
@@ -166,11 +123,10 @@ class AppWorld {
     }
 }
 
-console.log("test");
 app = new Niwa.LocalApplication(AppUi, AppWorld);
 app.run();
 
-},{"../../../src/niwa":15}],2:[function(require,module,exports){
+},{"../../../src/niwa":18}],2:[function(require,module,exports){
 (function (global){
 /*
  * Copyright (c) 2015 cannon.js Authors
@@ -55677,7 +55633,7 @@ World.setCreator(BoxActorParams.type, BoxActor.create);
 
 module.exports = BoxActor;
 
-},{"../../../libs/cannon.js/build/cannon":2,"../../world/world":18,"../actor":4,"./box_actor_params":7}],7:[function(require,module,exports){
+},{"../../../libs/cannon.js/build/cannon":2,"../../world/world":21,"../actor":4,"./box_actor_params":7}],7:[function(require,module,exports){
 class BoxActorParams {
     constructor(halfExtents) {
         this.halfExtents = halfExtents;
@@ -55728,7 +55684,86 @@ UserInterface.setCreator(BoxActorParams.type, BoxActorView.create);
 
 module.exports = BoxActorView;
 
-},{"../../../libs/three.js/build/three":3,"../../user_interface/user_interface":17,"../actor_view":5,"./box_actor_params":7}],9:[function(require,module,exports){
+},{"../../../libs/three.js/build/three":3,"../../user_interface/user_interface":20,"../actor_view":5,"./box_actor_params":7}],9:[function(require,module,exports){
+let World = require('../../world/world');
+let CANNON = require("../../../libs/cannon.js/build/cannon");
+let Actor = require('../actor');
+let SkyBoxActorParams = require('./sky_box_actor_params');
+
+class SkyBoxActor extends Actor {
+    constructor(name, actorParams) {
+        super(name, actorParams);
+
+        this.body = new CANNON.Body();
+        let shape = new CANNON.Sphere(1);
+        this.body.addShape(shape);
+    }
+
+    static create(name, actorParams) {
+        return new SkyBoxActor(name, actorParams);
+    }
+}
+
+World.setCreator(SkyBoxActorParams.type, SkyBoxActor.create);
+
+module.exports = SkyBoxActor;
+
+},{"../../../libs/cannon.js/build/cannon":2,"../../world/world":21,"../actor":4,"./sky_box_actor_params":10}],10:[function(require,module,exports){
+class SkyBoxActorParams {
+    constructor(materials) {
+        this.materials = materials;
+        this.type = SkyBoxActorParams.type;
+
+        // physics params
+        this.usePhysics = false;
+    }
+}
+
+SkyBoxActorParams.type = "sky_box";
+
+module.exports = SkyBoxActorParams;
+
+},{}],11:[function(require,module,exports){
+let THREE = require("../../../libs/three.js/build/three");
+let UserInterface = require('../../user_interface/user_interface');
+let ActorView = require('../actor_view');
+let SkyBoxActorParams = require('./sky_box_actor_params');
+
+class SkyBoxActorView extends ActorView {
+    constructor(name, actorParams) {
+        super(name, actorParams);
+
+        let materials = actorParams.materials;
+        let loader = new THREE.CubeTextureLoader();
+        let textureCube = loader.load(actorParams.materials);
+        //let textureCube = THREE.ImageUtils.loadTextureCube(materials, THREE.CubeRefractionMapping);
+        
+        let shader = THREE.ShaderLib[ "cube" ];
+        shader.uniforms[ "tCube" ].value = textureCube;
+    
+        var material = new THREE.ShaderMaterial( 
+            {
+                fragmentShader: shader.fragmentShader,
+                vertexShader: shader.vertexShader,
+                uniforms: shader.uniforms,
+                depthWrite: false,
+                side: THREE.BackSide
+            } );
+    
+        this.mesh = new THREE.Mesh( new THREE.BoxGeometry( 300, 300, 300 ), material);
+        //this.mesh = new THREE.Mesh(geometry, material);
+    }
+
+    static create(name, actorParams) {
+        return new SkyBoxActorView(name, actorParams);
+    }
+}
+
+UserInterface.setCreator(SkyBoxActorParams.type, SkyBoxActorView.create);
+
+module.exports = SkyBoxActorView;
+
+},{"../../../libs/three.js/build/three":3,"../../user_interface/user_interface":20,"../actor_view":5,"./sky_box_actor_params":10}],12:[function(require,module,exports){
 let World = require('../../world/world');
 let CANNON = require("../../../libs/cannon.js/build/cannon");
 let Actor = require('../actor');
@@ -55758,7 +55793,7 @@ World.setCreator(SphereActorParams.type, SphereActor.create);
 
 module.exports = SphereActor;
 
-},{"../../../libs/cannon.js/build/cannon":2,"../../world/world":18,"../actor":4,"./sphere_actor_params":10}],10:[function(require,module,exports){
+},{"../../../libs/cannon.js/build/cannon":2,"../../world/world":21,"../actor":4,"./sphere_actor_params":13}],13:[function(require,module,exports){
 class SphereActorParams {
     constructor(radius) {
         this.radius = radius;
@@ -55782,7 +55817,7 @@ SphereActorParams.type = "sphere";
 
 module.exports = SphereActorParams;
 
-},{}],11:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 let THREE = require("../../../libs/three.js/build/three");
 let UserInterface = require('../../user_interface/user_interface');
 let ActorView = require('../actor_view');
@@ -55807,7 +55842,7 @@ UserInterface.setCreator(SphereActorParams.type, SphereActorView.create);
 
 module.exports = SphereActorView;
 
-},{"../../../libs/three.js/build/three":3,"../../user_interface/user_interface":17,"../actor_view":5,"./sphere_actor_params":10}],12:[function(require,module,exports){
+},{"../../../libs/three.js/build/three":3,"../../user_interface/user_interface":20,"../actor_view":5,"./sphere_actor_params":13}],15:[function(require,module,exports){
 //
 // startup frontend.
 //
@@ -55874,20 +55909,20 @@ class LocalApplication {
 
 module.exports = LocalApplication;
 
-},{"../user_interface/user_interface":17,"../world/world":18}],13:[function(require,module,exports){
+},{"../user_interface/user_interface":20,"../world/world":21}],16:[function(require,module,exports){
 let CANNON = require("../../libs/cannon.js/build/cannon");
 
 module.exports = CANNON.Quaternion;
 
 
-},{"../../libs/cannon.js/build/cannon":2}],14:[function(require,module,exports){
+},{"../../libs/cannon.js/build/cannon":2}],17:[function(require,module,exports){
 let CANNON = require("../../libs/cannon.js/build/cannon");
 
 module.exports = CANNON.Vec3;
 
 
 
-},{"../../libs/cannon.js/build/cannon":2}],15:[function(require,module,exports){
+},{"../../libs/cannon.js/build/cannon":2}],18:[function(require,module,exports){
 module.exports = {
     //    version :           require('../package.json').version,
     THREE :             require('../libs/three.js/build/three'),
@@ -55900,12 +55935,15 @@ module.exports = {
     SphereActorParams : require('./actors/sphere/sphere_actor_params'),
     BoxActor :          require('./actors/box/box_actor'),
     BoxActorView :      require('./actors/box/box_actor_view'),
-    BoxActorParams :    require('./actors/box/box_actor_params'),    
+    BoxActorParams :    require('./actors/box/box_actor_params'),
+    SkyBoxActor :          require('./actors/sky_box/sky_box_actor'),
+    SkyBoxActorView :      require('./actors/sky_box/sky_box_actor_view'),
+    SkyBoxActorParams :    require('./actors/sky_box/sky_box_actor_params'),    
     Vector3D :          require('./math/vector3d'),
     Quaternion :        require('./math/quaternion'),    
 }
 
-},{"../libs/cannon.js/build/cannon":2,"../libs/three.js/build/three":3,"./actors/box/box_actor":6,"./actors/box/box_actor_params":7,"./actors/box/box_actor_view":8,"./actors/sphere/sphere_actor":9,"./actors/sphere/sphere_actor_params":10,"./actors/sphere/sphere_actor_view":11,"./application/local_application":12,"./math/quaternion":13,"./math/vector3d":14,"./user_interface/controls/orbit_controls":16,"./world/world":18}],16:[function(require,module,exports){
+},{"../libs/cannon.js/build/cannon":2,"../libs/three.js/build/three":3,"./actors/box/box_actor":6,"./actors/box/box_actor_params":7,"./actors/box/box_actor_view":8,"./actors/sky_box/sky_box_actor":9,"./actors/sky_box/sky_box_actor_params":10,"./actors/sky_box/sky_box_actor_view":11,"./actors/sphere/sphere_actor":12,"./actors/sphere/sphere_actor_params":13,"./actors/sphere/sphere_actor_view":14,"./application/local_application":15,"./math/quaternion":16,"./math/vector3d":17,"./user_interface/controls/orbit_controls":19,"./world/world":21}],19:[function(require,module,exports){
 let THREE = require("../../../libs/three.js/build/three");
 
 /**
@@ -56929,7 +56967,7 @@ Object.defineProperties( OrbitControls.prototype, {
 
 module.exports = OrbitControls;
 
-},{"../../../libs/three.js/build/three":3}],17:[function(require,module,exports){
+},{"../../../libs/three.js/build/three":3}],20:[function(require,module,exports){
 let THREE = require("../../libs/three.js/build/three");
 
 class UserInterface {
@@ -57040,7 +57078,7 @@ UserInterface.creators = {};
 
 module.exports = UserInterface;
 
-},{"../../libs/three.js/build/three":3}],18:[function(require,module,exports){
+},{"../../libs/three.js/build/three":3}],21:[function(require,module,exports){
 let Vector3D = require("../math/vector3d");
 let CANNON = require("../../libs/cannon.js/build/cannon");
 
@@ -57082,7 +57120,7 @@ class World {
             this.actors[actor.name] = actor;
             actor.world = this;
 
-            if (actor.body)
+            if (actor.body && actor.actorParams.usePhysics)
                 this.physicsWorld.add(actor.body);
             
             return true;
@@ -57163,4 +57201,4 @@ module.exports = World;
 
 
 
-},{"../../libs/cannon.js/build/cannon":2,"../math/vector3d":14}]},{},[1]);
+},{"../../libs/cannon.js/build/cannon":2,"../math/vector3d":17}]},{},[1]);

@@ -39,7 +39,7 @@ class World {
             this.actors[actor.name] = actor;
             actor.world = this;
 
-            if (actor.body)
+            if (actor.body && actor.actorParams.usePhysics)
                 this.physicsWorld.add(actor.body);
             
             return true;

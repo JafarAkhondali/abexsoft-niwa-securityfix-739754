@@ -10,7 +10,10 @@ module.exports = {
     SphereActorParams : require('./actors/sphere/sphere_actor_params'),
     BoxActor :          require('./actors/box/box_actor'),
     BoxActorView :      require('./actors/box/box_actor_view'),
-    BoxActorParams :    require('./actors/box/box_actor_params'),    
+    BoxActorParams :    require('./actors/box/box_actor_params'),
+    SkyBoxActor :          require('./actors/sky_box/sky_box_actor'),
+    SkyBoxActorView :      require('./actors/sky_box/sky_box_actor_view'),
+    SkyBoxActorParams :    require('./actors/sky_box/sky_box_actor_params'),    
     Vector3D :          require('./math/vector3d'),
     Quaternion :        require('./math/quaternion'),    
 }
