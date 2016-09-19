@@ -5,12 +5,12 @@ let SphereActorParams = require('./sphere_actor_params');
 
 class SphereActor extends Actor {
     constructor(name, actorParams) {
-	    super(name, actorParams);
+        super(name, actorParams);
 
         this.body = new CANNON.Body({
             mass: actorParams.mass,
             material: new CANNON.Material({
-                restitution: actorParams.restitution,                
+                restitution: actorParams.restitution,
                 friction: actorParams.friction,
             })
         });

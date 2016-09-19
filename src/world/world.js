@@ -10,23 +10,23 @@ class World {
         this.fixedTimeStep = 1.0 / 60.0; // seconds
         this.maxSubSteps = 3;
         
-	    this.defaultShadow = false;
-	    this.actorNum = 0;
-	    this.actors = {};
+        this.defaultShadow = false;
+        this.actorNum = 0;
+        this.actors = {};
     }
 
     static setCreator(type, creator) {
-	    World.creators[type] = creator;
+        World.creators[type] = creator;
     }
     
     static createActor(name, actorParams) {
         let actor = null;
-	    if (World.creators[actorParams.type] !== undefined) {
-		    actor = World.creators[actorParams.type](name, actorParams);	
-	    }
-	    else {
-		    console.log("No such actor type: " + actorParams.type);
-	    }
+        if (World.creators[actorParams.type] !== undefined) {
+            actor = World.creators[actorParams.type](name, actorParams);    
+        }
+        else {
+            console.log("No such actor type: " + actorParams.type);
+        }
         return actor;
     }
     
@@ -35,27 +35,27 @@ class World {
     }
 
     add(actor) {
-	    if (this.actors[actor.name] === undefined) {
-		    this.actors[actor.name] = actor;
+        if (this.actors[actor.name] === undefined) {
+            this.actors[actor.name] = actor;
             actor.world = this;
 
             if (actor.body)
                 this.physicsWorld.add(actor.body);
             
             return true;
-	    }
-	    else {
-	        console.log("There is a object with the same name: " + name);
-	        return false;
+        }
+        else {
+            console.log("There is a object with the same name: " + name);
+            return false;
         }        
     }
     
     update(delta) {
         this.physicsWorld.step(this.fixedTimeStep, delta, this.maxSubSteps);
 
-	    for (name in this.actors) {
-	        this.actors[name].update(delta);
-	    }        
+        for (name in this.actors) {
+            this.actors[name].update(delta);
+        }        
 
         this.app.update(delta);
     };
@@ -84,7 +84,7 @@ class World {
             // Animation
             if (this.actors[key].curAnimLabel){
                 actor.curAnimLabel = this.actors[key].curAnimLabel;
-                actor.curAnimFps = this.actors[key].curAnimFps;                
+                actor.curAnimFps = this.actors[key].curAnimFps;                    
             }
             
             actors[key] = actor;
@@ -94,23 +94,23 @@ class World {
     }
 
     merge(actors) {
-	    for (name in actors) {
-	        if (this.actors[name] === undefined){
-		        this.actors[name] = this.createActor(name, actors[name].actorInfo);
-	        }
+        for (name in actors) {
+            if (this.actors[name] === undefined){
+                this.actors[name] = this.createActor(name, actors[name].actorInfo);
+            }
             
-	        var transform = actors[name].transform;
-	        this.actors[name].setInterpolatePosition(transform.position);
-	        //this.actors[name].setPosition(transform.position);
-	        this.actors[name].setRotation(transform.rotation);
+            var transform = actors[name].transform;
+            this.actors[name].setInterpolatePosition(transform.position);
+            //this.actors[name].setPosition(transform.position);
+            this.actors[name].setRotation(transform.rotation);
             
-	        this.actors[name].setLinearVelocity(actors[name].linearVelocity);
+            this.actors[name].setLinearVelocity(actors[name].linearVelocity);
 
             if (actors[name].curAnimLabel){
                 this.actors[name].curAnimLabel = actors[name].curAnimLabel;
                 this.actors[name].curAnimFps = actors[name].curAnimFps;
             }
-	    }
+        }
     }    
 }
 

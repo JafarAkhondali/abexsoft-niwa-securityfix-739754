@@ -8,7 +8,7 @@ class BoxActorView extends ActorView {
         super(name, actorParams);
         let geometry = new THREE.BoxGeometry(actorParams.halfExtents.x * 2,
                                              actorParams.halfExtents.y * 2,
-                                             actorParams.halfExtents.z * 2);        
+                                             actorParams.halfExtents.z * 2);
         let loader = new THREE.TextureLoader();
         let texture = loader.load(actorParams.textureName);
         let material = new THREE.MeshBasicMaterial({map: texture});
@@ -19,8 +19,7 @@ class BoxActorView extends ActorView {
         return new BoxActorView(name, actorParams);
     }
 }
-    
+
 UserInterface.setCreator(BoxActorParams.type, BoxActorView.create);
 
 module.exports = BoxActorView;
-

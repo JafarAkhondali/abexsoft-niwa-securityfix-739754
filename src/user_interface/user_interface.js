@@ -9,9 +9,9 @@ class UserInterface {
         this.renderer.setSize( window.innerWidth, window.innerHeight );
         document.body.appendChild( this.renderer.domElement );
         
-        this.camera = new THREE.PerspectiveCamera(60, 
-					                              window.innerWidth / window.innerHeight, 
-					                              1, 1000 );
+        this.camera = new THREE.PerspectiveCamera(60,
+                                                  window.innerWidth / window.innerHeight,
+                                                  1, 1000 );
         this.camera.position.z = 20;
         this.camera.lookAt(new THREE.Vector3( 0, 0, 0 ));
         
@@ -21,10 +21,10 @@ class UserInterface {
         this.actorNum = 0;
         
         this.onWindowResize = function() {
-	        that.camera.aspect = window.innerWidth / window.innerHeight;
-	        that.camera.updateProjectionMatrix();
-            
-	        that.renderer.setSize( window.innerWidth, window.innerHeight );
+            that.camera.aspect = window.innerWidth / window.innerHeight;
+            that.camera.updateProjectionMatrix();
+ 
+            that.renderer.setSize( window.innerWidth, window.innerHeight );
         };
         window.addEventListener( 'resize', this.onWindowResize, false );
         
@@ -36,27 +36,27 @@ class UserInterface {
 
     static createActorView(name, actorParams) {
         let actorView = null;
-	    if (UserInterface.creators[actorParams.type] !== undefined) {
-	        actorView = UserInterface.creators[actorParams.type](name, actorParams);	
-	    }
-	    else {
-	        console.log("no such class: " + actorInfo.type);
-	    }
+        if (UserInterface.creators[actorParams.type] !== undefined) {
+            actorView = UserInterface.creators[actorParams.type](name, actorParams);
+        }
+        else {
+            console.log("no such class: " + actorInfo.type);
+        }
         return actorView;
     }
 
     add(actorView, pos, quat) {
         if (this.actorViews[actorView.name] === undefined) {
-	        actorView.userInterface = this;
-	        actorView.setPosition(pos);
+            actorView.userInterface = this;
+            actorView.setPosition(pos);
             actorView.setRotation(quat);
             this.scene.add(actorView.mesh);
-	        this.actorViews[actorView.name] = actorView;            
+            this.actorViews[actorView.name] = actorView;            
             return true;
         }
         else {
-	        console.log("UserInterface: There is a actor with the same name: " + name);
-	        return false;
+            console.log("UserInterface: There is a actor with the same name: " + name);
+            return false;
         }
     }
 
@@ -67,12 +67,12 @@ class UserInterface {
 
     syncActorViews(actors) {
         for (name in actors) {
-	        let actor = actors[name];
-	        if (this.actorViews[name] === undefined) {
+            let actor = actors[name];
+            if (this.actorViews[name] === undefined) {
                 let actorView = UserInterface.createActorView(name, actor.actorParams);
                 this.add(actorView, actor.getPosition(), actor.getRotation());
-	        }
-	        else {
+            }
+            else {
                 this.actorViews[name].setPosition(actor.getPosition());
                 this.actorViews[name].setRotation(actor.getRotation());
 
@@ -85,14 +85,14 @@ class UserInterface {
                         }
                     }
                 }
-	        }
+            }
         }
     }
     
     render(delta) {
         for (name in this.actorViews) {
-	        if (this.actorViews[name].updateAnimation !== undefined)
-	            this.actorViews[name].updateAnimation(delta);
+            if (this.actorViews[name].updateAnimation !== undefined)
+                this.actorViews[name].updateAnimation(delta);
         }
         
         this.application.update(delta);
@@ -104,6 +104,6 @@ class UserInterface {
     }
 }
 
-UserInterface.creators = {};    
+UserInterface.creators = {};
 
 module.exports = UserInterface;

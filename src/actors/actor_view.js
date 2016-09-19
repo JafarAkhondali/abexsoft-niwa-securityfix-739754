@@ -1,4 +1,3 @@
-
 class ActorView {
     constructor(name, actorParams) {
         this.name = name;
@@ -10,7 +9,7 @@ class ActorView {
     setPosition(vec) {
         this.mesh.position.copy(vec);
     }
-    
+
     setRotation(quat) {
         this.mesh.quaternion.copy(quat);
     }

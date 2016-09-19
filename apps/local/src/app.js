@@ -95,13 +95,13 @@ class AppWorld {
     setup(){
         let actorParams = new Niwa.SphereActorParams(1.0);
         actorParams.mass = 1.0;
-        actorParams.textureName = "/libs/three.js/examples/textures/crate.gif";        
+        actorParams.textureName = "../../../libs/three.js/examples/textures/crate.gif";        
         let actor = Niwa.World.createActor("sphere1", actorParams);
         actor.setPosition(new Niwa.Vector3D(0.0, 10.0, 0.0));
         this.world.add(actor);
 
         actorParams = new Niwa.BoxActorParams(new Niwa.Vector3D(50, 1, 50));
-        actorParams.textureName = "/libs/three.js/examples/textures/terrain/grasslight-big.jpg";
+        actorParams.textureName = "../../../libs/three.js/examples/textures/terrain/grasslight-big.jpg";
         actor = Niwa.World.createActor("floor", actorParams);
         actor.setPosition(new Niwa.Vector3D(0, -0.1, 0));
         this.world.add(actor);
