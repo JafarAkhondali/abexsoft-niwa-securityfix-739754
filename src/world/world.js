@@ -60,6 +60,11 @@ class World {
         this.app.update(delta);
     };
 
+    request(params) {
+        //console.log("request: " + params.func + ", " + params.options);
+        this.app[params.func](params.options);
+    }
+    
     getActorsForSending() {
         var actors = {};
         

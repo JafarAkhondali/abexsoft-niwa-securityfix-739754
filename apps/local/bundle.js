@@ -17,6 +17,7 @@ class AppUi {
           
         document.addEventListener( 'keydown', this.onKeyDown.bind(this), false );
         document.addEventListener( 'keyup', this.onKeyUp.bind(this), false );
+        document.addEventListener( 'mousedown', this.onMouseDown.bind(this), false );
     }
 
     update(delta) {
@@ -25,6 +26,9 @@ class AppUi {
 
     onKeyDown( event ) {
         switch ( event.keyCode ) {
+        case 32 : // space
+            this.shotball();
+            break;
         }
     }
     
@@ -32,11 +36,33 @@ class AppUi {
         switch( event.keyCode ) {
         }   
     }
+
+    onMouseDown(event) {
+        switch (event.button) {
+        case 0:
+            this.leftMouse = true; 
+            break;
+        case 2:
+            this.rightMouse= true; 
+            break;
+        }
+    }
+
+    shotball() {
+       let pos = this.userInterface.camera.position;
+            let dir = new Niwa.THREE.Vector3(0, 0, -1);
+            dir.applyQuaternion(this.userInterface.camera.quaternion);
+            this.userInterface.request({
+                func: "shotball",
+                options: {pos: pos, dir: dir}
+            });
+    }
 }
 
 class AppWorld {
     constructor(world){
         this.world = world;
+        this.sum = 0;
     }
     
     setup(){
@@ -97,29 +123,27 @@ class AppWorld {
             '../../libs/three.js/examples/textures/cube/skybox/pz.jpg' ,
             '../../libs/three.js/examples/textures/cube/skybox/nz.jpg'  
         ];
-        
         actorParams = new Niwa.SkyBoxActorParams(materials);
         actor = Niwa.World.createActor("skybox", actorParams);
         this.world.add(actor);
-        
-/*        
-        var obj;
-        var actorInfo;
-        this.world.enableShadow(true);
-        
-        actorInfo = new SpotLightActorInfo(0xffffff);
-        obj = this.world.actorManager.createActor("spotLight", actorInfo);
-        obj.setPosition(new Vector3D(-60,150,-30));
-        
-        
-        actorInfo = new BoxActorInfo(50, 1, 50);
-        actorInfo.textureName = "/three.js/examples/textures/terrain/grasslight-big.jpg";
-        obj = this.world.actorManager.createActor("floor", actorInfo);
-        obj.setPosition(new Vector3D(0, -0.5, 0));
-  */      
     }
     
     update(delta){
+    }
+
+    shotball(options) {
+        //console.log(options);
+
+        let actorParams = new Niwa.SphereActorParams(0.5);
+        actorParams.mass = 5;
+        actorParams.textureName = "../../libs/three.js/examples/textures/crate.gif";
+        let actor = Niwa.World.createActor("shot" + this.sum, actorParams);
+        actor.setPosition(options.pos);
+        this.world.add(actor);
+
+        //console.log("dir: (" + options.dir.x + ", " + options.dir.y + ", " + options.dir.z + ")");
+        actor.applyLocalImpulse(options.dir.multiplyScalar(500), new Niwa.Vector3D(0, 0, 0));
+        this.sum += 1;     
     }
 }
 
@@ -57068,6 +57092,10 @@ class UserInterface {
         this.application.update(delta);
         this.renderer.render(this.scene, this.camera);
     }
+
+    request(params) {
+        this.world.request(params);
+    }
     
     onMessage(event) {
         this.application.onMessage(event);
@@ -57141,6 +57169,11 @@ class World {
         this.app.update(delta);
     };
 
+    request(params) {
+        //console.log("request: " + params.func + ", " + params.options);
+        this.app[params.func](params.options);
+    }
+    
     getActorsForSending() {
         var actors = {};
         
