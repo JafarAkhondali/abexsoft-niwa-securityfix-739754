@@ -34,6 +34,11 @@ http.createServer(function(request, response) {
     var filename = path.join(process.cwd(), uri);
 
 	fs.exists(filename, function(exists){
+    if (path.normalize(decodeURI(uri)) !== decodeURI(uri)) {
+        response.statusCode = 403;
+        response.end();
+        return;
+    }
 		console.log(filename + " " + exists);
 		if (!exists) {
             Response["404"](); return ;
